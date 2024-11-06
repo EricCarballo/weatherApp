@@ -172,7 +172,7 @@ const AccountDropdown = ({ mobile = false }: { mobile?: boolean }) => (
 const GithubLink = ({ mobile = false }: { mobile?: boolean }) => (
   <Button asChild variant="outline" size={mobile ? "default" : "icon"}>
     <Link
-      href="https://github.com/EricCarballo"
+      href="https://github.com/EricCarballo/weatherApp"
       target="_blank"
       rel="noopener noreferrer"
       className={cn(mobile && "flex items-center")}
