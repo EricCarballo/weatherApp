@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Thermometer, Wind, Droplets } from 'lucide-react'
+import { Droplets, Thermometer, Wind } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
