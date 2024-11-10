@@ -1,58 +1,29 @@
 "use client";
 
 import { useState, useEffect } from "react"; // React hooks
-import { queryData } from "@/lib/influxdb"; // Importar la función de consulta
 
-// UI Components
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { getAirQualityData, getHumidityData, getTemperatureData } from "@/lib";
+import KpiCard from "@/components/kpi/KpiCard";
 import { Thermometer, Droplets, Wind } from "lucide-react";
+
 
 export default function EnvironmentalDashboard() {
   const [temperatureData, setTemperatureData] = useState<any[]>([]);
   const [humidityData, setHumidityData] = useState<any[]>([]);
-  const [airQuality, setAirQuality] = useState<number>(0); // Calcular la calidad del aire en base a los datos
+  const [airQualityData, setAirQualityData] = useState<any[]>([]);
   const [timeInterval, setTimeInterval] = useState("hourly");
 
   useEffect(() => {
-    // Función que se ejecuta al cargar el componente
-    const fetchData = async () => {
-      // Consulta para obtener los datos de temperatura y humedad
-      const query = `
-        from(bucket: "Prueba") 
-          |> range(start: -1h)
-          |> filter(fn: (r) => r._measurement == "sensor_data")
-          |> filter(fn: (r) => r._field == "air_quality" or r._field == "temperature" or r._field == "humidity")
-          |> aggregateWindow(every: 5m, fn: mean, createEmpty: false)
-          |> yield(name: "mean")
-      `;
-      
-      const results = await queryData(query); // Realizar la consulta
+      const fetchData = async () => {
+      const tempData = await getTemperatureData();
+      const humData = await getHumidityData();
+      const airData = await getAirQualityData();
 
-      // Filtrar los resultados para obtener temperatura y humedad
-      const newTemperatureData = results.filter((r: any) => r["_field"] === "temperature").map((r: any) => ({
-        time: r._time,
-        temperature: r._value,
-      }));
-      const newHumidityData = results.filter((r: any) => r["_field"] === "humidity").map((r: any) => ({
-        time: r._time,
-        humidity: r._value,
-      }));
-
-      setTemperatureData(newTemperatureData);
-      setHumidityData(newHumidityData);
-      
-      // Aquí calculamos una estimación de la calidad del aire en base a los datos de humedad y temperatura
-      // La fórmula de calidad del aire depende de lo que estés midiendo. Este es solo un ejemplo simple.
-      setAirQuality(Math.floor((newTemperatureData[0]?.temperature + newHumidityData[0]?.humidity) / 2));
+      setTemperatureData(tempData);
+      setHumidityData(humData);
+      setAirQualityData(airData);
     };
 
-    // Llamar la función de consulta cada 5 segundos (ajusta esto según tus necesidades)
     const interval = setInterval(() => {
       fetchData();
     }, 5000);
@@ -60,57 +31,88 @@ export default function EnvironmentalDashboard() {
     return () => clearInterval(interval);
   }, [timeInterval]);
 
+  // Cálculos de la última temperatura, humedad y calidad del aire
   const latestTemperature = parseFloat(temperatureData[temperatureData.length - 1]?.temperature || "0");
   const latestHumidity = parseFloat(humidityData[humidityData.length - 1]?.humidity || "0");
+  const latestAirQuality = airQualityData[airQualityData.length - 1]?.air_quality || 0;
+
+  const chartConfig = {
+    temperature: {
+      color: "#ff6347",
+      dataKey: "temperature",
+    },
+    humidity: {
+      color: "#4682b4",
+      dataKey: "humidity",
+    },
+    airQuality: {
+      color: "#32cd32",
+      dataKey: "air_quality",
+    },
+  };
 
   return (
     <div className="container mx-auto p-4 min-h-screen">
       <h1 className="text-3xl font-bold mb-6">KPI Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
 
-        {/*================= TEMPERATURA =================*/}
-        <div className="md:col-span-2 lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium">Temperatura</CardTitle>
-              <Thermometer className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{latestTemperature} °C</div>
-              <p className="text-xs text-muted-foreground">
-                Última actualización: {new Date().toLocaleTimeString()}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+        {/*============  TEMPERATURA  ============*/}
+        <KpiCard
+          title="Temperatura"
+          icon={Thermometer}
+          value={latestTemperature}
+          unit="°C"
+          data={temperatureData}
+          timeInterval={timeInterval}
+          onIntervalChange={setTimeInterval}
+          dataKey={chartConfig.temperature.dataKey}
+          alertThreshold={30}
+          alertMessage="¡Temperatura alta!"
+          alertDescription="La temperatura ha superado el umbral de seguridad."
+          chartConfig={{
+            color: chartConfig.temperature.color,
+            dataKey: chartConfig.temperature.dataKey,
+          }}
+        />
 
-        {/*================= HÚMEDAD =================*/}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Humedad</CardTitle>
-            <Droplets className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{latestHumidity} %</div>
-            <p className="text-xs text-muted-foreground">
-              Última actualización: {new Date().toLocaleTimeString()}
-            </p>
-          </CardContent>
-        </Card>
+        {/*============  HUMEDAD  ============*/}
+        <KpiCard
+          title="Humedad"
+          icon={Droplets}
+          value={latestHumidity}
+          unit="%"
+          data={humidityData}
+          timeInterval={timeInterval}
+          onIntervalChange={setTimeInterval}
+          dataKey={chartConfig.humidity.dataKey}
+          alertThreshold={80}
+          alertMessage="¡Humedad alta!"
+          alertDescription="La humedad ha superado el umbral de seguridad."
+          chartConfig={{
+            color: chartConfig.humidity.color,
+            dataKey: chartConfig.humidity.dataKey,
+          }}
+        />
 
-        {/*================= CALIDAD DEL AIRE =================*/}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Calidad del Aire</CardTitle>
-            <Wind className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{airQuality} ppm</div>
-            <p className="text-xs text-muted-foreground">
-              Última actualización: {new Date().toLocaleTimeString()}
-            </p>
-          </CardContent>
-        </Card>
+        {/*============  CALIDAD DEL AIRE  ============*/}
+        <KpiCard
+          title="Calidad del Aire"
+          icon={Wind}
+          value={latestAirQuality}
+          unit="ppm"
+          data={airQualityData}
+          timeInterval={timeInterval}
+          onIntervalChange={setTimeInterval}
+          dataKey={chartConfig.airQuality.dataKey}
+          alertThreshold={100}
+          alertMessage="¡Calidad del aire baja!"
+          alertDescription="La calidad del aire ha caído por debajo del nivel seguro."
+          chartConfig={{
+            color: chartConfig.airQuality.color,
+            dataKey: chartConfig.airQuality.dataKey,
+          }}
+        />
+
       </div>
     </div>
   );
