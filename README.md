@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dashboard de Monitoreo Ambiental
 
-## Getting Started
+Este proyecto proporciona un dashboard para visualizar datos de **temperatura**, **humedad** y **calidad del aire** obtenidos de una base de datos **InfluxDB**. Los datos se presentan en un formato visual fácil de entender, con gráficos y alertas que indican los niveles de cada parámetro.
 
-First, run the development server:
+## Tecnologías Utilizadas
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **React** (con Next.js)
+- **InfluxDB** (Base de datos de series temporales)
+- **TailwindCSS** (Estilos)
+- **Recharts** (Gráficos)
+- **Lucide Icons** (Iconos para la interfaz de usuario)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Funcionalidades
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Monitoreo de temperatura, humedad y calidad del aire en tiempo real.
+- Gráficos interactivos para cada KPI (Indicador Clave de Rendimiento).
+- Alertas cuando un parámetro supera los umbrales definidos.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Imágenes del Proyecto
 
-## Learn More
+### 1. Dashboard Principal
 
-To learn more about Next.js, take a look at the following resources:
+Aquí se visualizan los tres indicadores clave (temperatura, humedad y calidad del aire) en un formato de tarjeta con gráficos interactivos.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![Dashboard](./assets/dashboard.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 2. Datos de InfluxDB
 
-## Deploy on Vercel
+Ejemplo de cómo se almacenan los datos de **temperatura**, **humedad** y **calidad del aire** en InfluxDB.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+![Datos InfluxDB](./assets/influxdb-data.png)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Instalación y Ejecución
+
+### Requisitos
+
+1. Tener **Node.js** instalado en tu máquina (versión 16.x o superior).
+2. Tener acceso a una instancia de **InfluxDB** corriendo y configurada con los datos necesarios.
+
+### 1. Clonar el Repositorio
+
+```git clone https://github.com/EricCarballo/weatherApp.git```
+``` cd tu-repositorio```
+
+### 2. Descargar Dependencias
+
+```npm install```
+
+### 3. Configuración de Variables de Entorno
+
+Crea un archivo .env en la raíz del proyecto y agrega las variables del .env.template
+
+### 4. Correr el proyecto
+
+``` npm run dev ``` 
