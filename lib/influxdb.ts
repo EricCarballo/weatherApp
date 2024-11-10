@@ -1,8 +1,8 @@
 import { InfluxDB } from '@influxdata/influxdb-client';
 
-const INFLUXDB_URL = process.env.INFLUXDB_URL!;
-const INFLUXDB_TOKEN = process.env.INFLUXDB_TOKEN!;
-const INFLUXDB_ORG = process.env.INFLUXDB_ORG!;
+const INFLUXDB_URL = process.env.NEXT_PUBLIC_INFLUXDB_URL || 'http://192.168.0.104:8086';
+const INFLUXDB_TOKEN = process.env.NEXT_PUBLIC_INFLUXDB_TOKEN || '7Qpw_atdeNLtM6xIoGQW_42_DYmqJay_eiUvn90pKGkUwpicW2yslxsv9vcnRVjhyVHd1TKFIFNnQac1b0CSCQ==';
+const INFLUXDB_ORG = process.env.NEXT_PUBLIC_INFLUXDB_ORG || '870f0f2922423d67';
 
 if (!INFLUXDB_URL || !INFLUXDB_TOKEN || !INFLUXDB_ORG) {
   throw new Error('Faltan variables de entorno para InfluxDB.');
