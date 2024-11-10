@@ -14,6 +14,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { Separator } from "../ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,37 +37,62 @@ export const NavBar = () => {
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Close the mobile menu if clicked outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target) && !buttonRef.current?.contains(event.target)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !buttonRef.current?.contains(event.target)
+      ) {
         setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
     <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b bg-background fixed top-0 left-0 right-0 z-50">
       <Link className="flex items-center justify-center" href="/">
-        <img src="img/logoApp.webp" alt="Logo Sistema de Monitoreo Ambiental" className="h-6 w-6" />
-        <span className="ml-2 text-lg font-bold text-primary">
-          Weather App
-        </span>
+        <img
+          src="img/logoApp.webp"
+          alt="Logo Sistema de Monitoreo Ambiental"
+          className="h-6 w-6"
+        />
+        <span className="ml-2 text-lg font-bold text-primary">Weather App</span>
       </Link>
 
       {/* Menu for larger screens */}
       <nav className="ml-auto hidden lg:flex items-center gap-4 sm:gap-6">
         <NavLinks />
         <AccountDropdown />
-        <GithubLink />
-        <ModeToggle />
+        <TooltipProvider delayDuration={500}>
+          <Tooltip>
+            <TooltipTrigger>
+              {" "}
+              <GithubLink />{" "}
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="uppercase font-semibold">ver repositorio</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <TooltipProvider delayDuration={500}>
+          <Tooltip>
+            <TooltipTrigger>
+              <ModeToggle />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="uppercase font-semibold">cambiar el tema</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </nav>
 
       {/* Mobile menu button */}
@@ -95,9 +126,11 @@ export const NavBar = () => {
           <nav className="flex flex-col space-y-4">
             <NavLinks mobile />
             <AccountDropdown mobile />
-            <div className="flex gap-4"> {/* Buttons in a row */}
+            <div className="flex gap-4">
+              {" "}
+              {/* Buttons in a row */}
               <GithubLink mobile />
-              <Separator orientation="vertical"/>
+              <Separator orientation="vertical" />
               <ModeToggle />
             </div>
           </nav>
@@ -118,7 +151,7 @@ const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
     >
       Dashboard
     </Link>
-    
+
     {mobile && <div className="border-b my-2" />}
 
     <Link
@@ -147,11 +180,14 @@ const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
   </>
 );
 
-
 const AccountDropdown = ({ mobile = false }: { mobile?: boolean }) => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button variant="outline" size={mobile ? "default" : "sm"} className={cn(mobile)}>
+      <Button
+        variant="outline"
+        size={mobile ? "default" : "sm"}
+        className={cn(mobile)}
+      >
         Cuenta
       </Button>
     </DropdownMenuTrigger>
