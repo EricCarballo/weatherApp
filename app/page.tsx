@@ -58,7 +58,7 @@ export default function Home() {
                 <CardContent>
                   <p>Medición de la calidad del aire en partes por millón (ppm).</p>
                   <ul className="list-disc list-inside mt-2">
-                    <li>Gráfico de barras o medidor de nivel</li>
+                    <li>Gráfico de línea o medidor de nivel</li>
                     <li>Alertas cuando se supera 100 ppm</li>
                     <li>Datos del sensor MQ-2 cada 5 segundos</li>
                     <li>Reportes promedio por hora</li>

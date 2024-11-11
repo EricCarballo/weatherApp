@@ -21,7 +21,6 @@ export async function getTemperatureData(): Promise<any[]> {
     }
 
     return rawData
-      .filter((entry: any) => entry._time && entry._value)
       .map((entry: any) => ({
         time: new Date(entry[4]).toLocaleTimeString("es-MX", { hour: '2-digit', minute: '2-digit' }),
         value: parseFloat(entry[5]),

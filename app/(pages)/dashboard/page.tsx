@@ -29,7 +29,7 @@ export default function EnvironmentalDashboard() {
 
     const interval = setInterval(() => {
       fetchData();
-    }, 5000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [timeInterval]);
