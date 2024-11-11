@@ -25,9 +25,10 @@ const KpiCard = ({
   unit,
   chartConfig,
 }: any) => {
+  // Accedemos al último valor de `value` que está dentro de cada objeto de los datos
   const latestData =
     Array.isArray(data) && data.length > 0
-      ? parseFloat(data[data.length - 1][dataKey])
+      ? parseFloat(data[data.length - 1].value) // Accedemos a `value` directamente
       : value;
 
   return (
@@ -59,25 +60,13 @@ const KpiCard = ({
                 className="w-full h-[250px] md:h-[300px] lg:h-[350px]"
               >
                 <ResponsiveContainer width="100%" height="100%">
-                  {/* <LineChart data={data}>
-                      <XAxis dataKey="time" />
-                      <YAxis tickFormatter={(value) => `${value}${unit}`} />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Line
-                        type="monotone"
-                        dataKey={dataKey}
-                        stroke="var(--color-temperature)"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart> */}
                   <LineChart data={data}>
                     <XAxis dataKey="time" />
                     <YAxis tickFormatter={(value) => `${value}${unit}`} />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Line
                       type="monotone"
-                      dataKey={dataKey}
+                      dataKey="value" // Aquí usamos `value` como la clave de los datos
                       stroke={chartConfig.color}
                       strokeWidth={2}
                       dot={false}
@@ -98,8 +87,8 @@ const KpiCard = ({
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Line
                       type="monotone"
-                      dataKey={dataKey}
-                      stroke="var(--color-temperature)"
+                      dataKey="value" // Aquí usamos `value` también
+                      stroke={chartConfig.color}
                       strokeWidth={2}
                       dot={false}
                     />
