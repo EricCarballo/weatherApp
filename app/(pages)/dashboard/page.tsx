@@ -6,7 +6,6 @@ import { getAirQualityData, getHumidityData, getTemperatureData } from "@/lib";
 import KpiCard from "@/components/kpi/KpiCard";
 import { Thermometer, Droplets, Wind } from "lucide-react";
 
-
 export default function EnvironmentalDashboard() {
   const [temperatureData, setTemperatureData] = useState<any[]>([]);
   const [humidityData, setHumidityData] = useState<any[]>([]);
@@ -14,10 +13,14 @@ export default function EnvironmentalDashboard() {
   const [timeInterval, setTimeInterval] = useState("hourly");
 
   useEffect(() => {
-      const fetchData = async () => {
+    const fetchData = async () => {
       const tempData = await getTemperatureData();
       const humData = await getHumidityData();
       const airData = await getAirQualityData();
+
+      console.log("Temperatura", tempData);
+      console.log("Humedad", humData);
+      console.log("Calidad del Aire", airData);
 
       setTemperatureData(tempData);
       setHumidityData(humData);
@@ -55,7 +58,6 @@ export default function EnvironmentalDashboard() {
     <div className="container mx-auto p-4 min-h-screen">
       <h1 className="text-3xl font-bold mb-6">KPI Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-
         {/*============  TEMPERATURA  ============*/}
         <KpiCard
           title="Temperatura"
@@ -112,7 +114,6 @@ export default function EnvironmentalDashboard() {
             dataKey: chartConfig.airQuality.dataKey,
           }}
         />
-
       </div>
     </div>
   );
