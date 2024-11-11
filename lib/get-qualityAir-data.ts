@@ -13,6 +13,7 @@ export async function getAirQualityData(): Promise<any[]> {
   `;
   try {
     const data = await queryInfluxDB(query);
+    console.log(`Datos de la calidad el aire: ${data}`);
     return data;
   } catch (error) {
     console.error("Error al obtener datos de calidad del aire:", error);

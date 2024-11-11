@@ -13,6 +13,7 @@ export async function getHumidityData(): Promise<any[]> {
   `;
   try {
     const data = await queryInfluxDB(query);
+    console.log(`Datos de la Húmedad: ${data}`);
     return data;
   } catch (error) {
     console.error("Error al obtener datos de humedad:", error);
