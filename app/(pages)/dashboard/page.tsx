@@ -32,8 +32,8 @@ export default function EnvironmentalDashboard() {
   }, [timeInterval]);
 
   // Cálculos de la última temperatura, humedad y calidad del aire
-  const latestTemperature = parseFloat(temperatureData[temperatureData.length - 1]?.temperature || "0");
-  const latestHumidity = parseFloat(humidityData[humidityData.length - 1]?.humidity || "0");
+  const latestTemperature = temperatureData[temperatureData.length - 1]?.temperature || 0;
+  const latestHumidity = humidityData[humidityData.length - 1]?.humidity || 0;
   const latestAirQuality = airQualityData[airQualityData.length - 1]?.air_quality || 0;
 
   const chartConfig = {

@@ -4,7 +4,7 @@ const bucket = process.env.NEXT_PUBLIC_INFLUXDB_BUCKET;
 
 export async function getHumidityData(): Promise<any[]> {
   const query = `
-     from(bucket: "${bucket}")
+    from(bucket: "${bucket}")
       |> range(start: -1h)
       |> filter(fn: (r) => r["_measurement"] == "sensor_data")
       |> filter(fn: (r) => r["_field"] == "humidity")
@@ -12,9 +12,11 @@ export async function getHumidityData(): Promise<any[]> {
       |> yield(name: "mean")
   `;
   try {
-    const data = await queryInfluxDB(query);
-    console.log(`Datos de la Húmedad: ${data}`);
-    return data;
+    const rawData = await queryInfluxDB(query);
+    return rawData.map((entry: any) => ({
+      time: new Date(entry._time).toLocaleTimeString("es-MX", { hour: '2-digit', minute: '2-digit' }),
+      humidity: parseFloat(entry._value)
+    }));
   } catch (error) {
     console.error("Error al obtener datos de humedad:", error);
     return [];
