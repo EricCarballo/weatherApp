@@ -4,9 +4,9 @@ const INFLUXDB_URL = process.env.NEXT_PUBLIC_INFLUXDB_URL;
 const INFLUXDB_TOKEN = process.env.NEXT_PUBLIC_INFLUXDB_TOKEN;
 const INFLUXDB_ORG = process.env.NEXT_PUBLIC_INFLUXDB_ORG;
 
-if (!INFLUXDB_URL || !INFLUXDB_TOKEN || !INFLUXDB_ORG) {
-  throw new Error('Faltan variables de entorno para InfluxDB.');
-}
+// if (!INFLUXDB_URL || !INFLUXDB_TOKEN || !INFLUXDB_ORG) {
+//   throw new Error('Faltan variables de entorno para InfluxDB.');
+// }
 
 const influxDBClient = new InfluxDB({
   url: INFLUXDB_URL,

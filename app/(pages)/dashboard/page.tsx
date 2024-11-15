@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react"; // React hooks
 
+import { Thermometer, Droplets, Wind } from "lucide-react";
 import { getAirQualityData, getHumidityData, getTemperatureData } from "@/lib";
 import KpiCard from "@/components/kpi/KpiCard";
-import { Thermometer, Droplets, Wind } from "lucide-react";
+import LinearRegressionChart from "@/components/linearRegression/linearRegression";
 
 export default function EnvironmentalDashboard() {
   const [temperatureData, setTemperatureData] = useState<any[]>([]);
@@ -35,9 +36,18 @@ export default function EnvironmentalDashboard() {
   }, [timeInterval]);
 
   // Cálculos de la última temperatura, humedad y calidad del aire
-  const latestTemperature = temperatureData[temperatureData.length - 1]?.temperature || 0;
-  const latestHumidity = humidityData[humidityData.length - 1]?.humidity || 0;
-  const latestAirQuality = airQualityData[airQualityData.length - 1]?.air_quality || 0;
+  const latestTemperature = getLatestData(temperatureData, "temperature");
+  const latestHumidity = getLatestData(humidityData, 'humidity');
+  const latestAirQuality = getLatestData(airQualityData, 'air_quality');
+
+  // const latestTemperature = temperatureData[temperatureData.length - 1]?.temperature || 0;
+  // const latestHumidity = humidityData[humidityData.length - 1]?.humidity || 0;
+  // const latestAirQuality = airQualityData[airQualityData.length - 1]?.air_quality || 0;
+
+  const regressionData = temperatureData.map((temp, index) => ({
+    x: temp.timestamp || index,
+    y: humidityData[index]?.humidity || 0,
+  }));
 
   const chartConfig = {
     temperature: {
@@ -114,6 +124,21 @@ export default function EnvironmentalDashboard() {
             dataKey: chartConfig.airQuality.dataKey,
           }}
         />
+
+        {/*============  REGRESIÓN LINEAL  ============*/}
+        <LinearRegressionChart
+          title="Gráfica de Regresión Lineal"
+          description="Relación entre Variable X y Variable Y con línea de regresión"
+          initialData={regressionData}
+          dataColor="hsl(var(--chart-3))"
+          regressionColor="hsl(var(--chart-4))"
+        />
+        {/* <ScatterPlotChart
+          title="Gráfica de Correlación"
+          description="Relación entre Variable X y Variable Y"
+          data={sampleData}
+          color="hsl(var(--chart-2))"
+        /> */}
       </div>
     </div>
   );
