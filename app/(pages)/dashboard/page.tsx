@@ -32,18 +32,17 @@ export default function EnvironmentalDashboard() {
     return () => clearInterval(interval);
   }, [timeInterval]);
 
-  // Cálculos de la última temperatura, humedad y calidad del aire
-  const latestTemperature =
-    temperatureData[temperatureData.length - 1]?.value || 0;
-  const latestHumidity = humidityData[humidityData.length - 1]?.value || 0;
-  const latestAirQuality =
-    airQualityData[airQualityData.length - 1]?.value || 0;
+  // const latestTemperature = temperatureData[temperatureData.length - 1]?.value || 0;
+  // const latestHumidity = humidityData[humidityData.length - 1]?.value || 0;
+  // const latestAirQuality = airQualityData[airQualityData.length - 1]?.value || 0;
+  const latestTemperature = getLatestData( temperatureData,'value' );
+  const latestHumidity = getLatestData( humidityData,'value' );
+  const latestAirQuality = getLatestData( airQualityData,'value' );
 
-  // Combina la data de temperatura y humedad para la regresión
-  const regressionData = temperatureData.map((temp, index) => ({
-    x: temp.value, // Temperatura
-    y: humidityData[index]?.value || 0, // Humedad
-  }));
+  const regressionData = temperatureData.map((temp, index) => {
+    const humidity = humidityData[index] ? humidityData[index].value : null;
+    return humidity !== null ? { x: temp.value, y: humidity } : null;
+  }).filter((data) => data !== null);
 
   const chartConfig = {
     temperature: {
