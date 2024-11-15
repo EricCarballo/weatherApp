@@ -1,18 +1,7 @@
-"use client";
-
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
-import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Line,
-} from "recharts";
+import { ChartContainer } from "@/components/ui/chart";
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line } from "recharts";
 import { Button } from "@/components/ui/button";
 import { calculateRegression } from "../../common/formulaRegresion";
 import { calculateCorrelation } from "@/common/formulaCorrelacion";
@@ -20,7 +9,8 @@ import { calculateCorrelation } from "@/common/formulaCorrelacion";
 type LinearRegressionChartProps = {
   title: string;
   description: string;
-  initialData: { x: number; y: number }[];
+  temperatureData: any
+  humidityData: any
   dataColor?: string;
   regressionColor?: string;
 };
@@ -28,18 +18,24 @@ type LinearRegressionChartProps = {
 export default function LinearRegressionChart({
   title,
   description,
-  initialData,
+  temperatureData,
+  humidityData,
   dataColor = "hsl(var(--chart-1))",
   regressionColor = "hsl(var(--chart-2))",
 }: LinearRegressionChartProps) {
-  const [data, setData] = useState(initialData);
+  const formattedData = temperatureData.map((temp: { value: any; }, index: string | number) => ({
+    x: temp.value, // La temperatura será el valor de X
+    y: humidityData[index]?.value || 0, // La humedad será el valor de Y
+  }));
+
+  const [data, setData] = useState(formattedData);
 
   const regression = useMemo(() => calculateRegression(data), [data]);
   const correlation = useMemo(() => calculateCorrelation(data), [data]);
 
   const regressionLine = [
-    { x: Math.min(...data.map((d) => d.x)), y: regression.a * Math.min(...data.map((d) => d.x)) + regression.b },
-    { x: Math.max(...data.map((d) => d.x)), y: regression.a * Math.max(...data.map((d) => d.x)) + regression.b },
+    { x: Math.min(...data.map((d: { x: any; }) => d.x)), y: regression.a * Math.min(...data.map((d: { x: any; }) => d.x)) + regression.b },
+    { x: Math.max(...data.map((d: { x: any; }) => d.x)), y: regression.a * Math.max(...data.map((d: { x: any; }) => d.x)) + regression.b },
   ];
 
   const regenerateData = () => {
@@ -68,8 +64,8 @@ export default function LinearRegressionChart({
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
               <CartesianGrid />
-              <XAxis type="number" dataKey="x" name="Variable X" />
-              <YAxis type="number" dataKey="y" name="Variable Y" />
+              <XAxis type="number" dataKey="x" name="Temperatura" />
+              <YAxis type="number" dataKey="y" name="Humedad" />
               <Tooltip
                 content={({ active, payload }: { active?: boolean; payload?: any[] }) => {
                   if (active && payload?.length) {

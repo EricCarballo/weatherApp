@@ -124,7 +124,8 @@ export default function EnvironmentalDashboard() {
         <LinearRegressionChart
           title="Gráfica de Regresión Lineal"
           description="Relación entre Temperatura y Humedad con línea de regresión"
-          initialData={regressionData}
+          temperatureData={temperatureData}
+          humidityData={humidityData}
           dataColor="hsl(var(--chart-3))"
           regressionColor="hsl(var(--chart-4))"
         />
