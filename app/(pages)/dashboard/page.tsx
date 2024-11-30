@@ -1,3 +1,4 @@
+"use client"
 import { useState, useEffect } from "react"; // React hooks
 import { Thermometer, Droplets, Wind } from "lucide-react";
 import { getAirQualityData, getHumidityData, getTemperatureData } from "@/lib";
@@ -32,12 +33,12 @@ export default function EnvironmentalDashboard() {
     return () => clearInterval(interval);
   }, [timeInterval]);
 
-  // const latestTemperature = temperatureData[temperatureData.length - 1]?.value || 0;
-  // const latestHumidity = humidityData[humidityData.length - 1]?.value || 0;
-  // const latestAirQuality = airQualityData[airQualityData.length - 1]?.value || 0;
-  const latestTemperature = getLatestData( temperatureData,'value' );
-  const latestHumidity = getLatestData( humidityData,'value' );
-  const latestAirQuality = getLatestData( airQualityData,'value' );
+  const latestTemperature = temperatureData[temperatureData.length - 1]?.value || 0;
+  const latestHumidity = humidityData[humidityData.length - 1]?.value || 0;
+  const latestAirQuality = airQualityData[airQualityData.length - 1]?.value || 0;
+  // const latestTemperature = getLatestData( temperatureData,'value' );
+  // const latestHumidity = getLatestData( humidityData,'value' );
+  // const latestAirQuality = getLatestData( airQualityData,'value' );
 
   const regressionData = temperatureData.map((temp, index) => {
     const humidity = humidityData[index] ? humidityData[index].value : null;

@@ -23,29 +23,33 @@ export default function LinearRegressionChart({
   dataColor = "hsl(var(--chart-1))",
   regressionColor = "hsl(var(--chart-2))",
 }: LinearRegressionChartProps) {
-  const formattedData = temperatureData.map((temp: { value: any; }, index: string | number) => ({
-    x: temp.value, // La temperatura será el valor de X
-    y: humidityData[index]?.value || 0, // La humedad será el valor de Y
-  }));
-
+  
+  const formattedData = temperatureData.map((temp: { value: any; }, index: string | number) => {
+    const humidity = humidityData[index]?.value;
+    if (temp.value !== null && humidity !== null) {
+      return { x: temp.value, y: humidity };
+    }
+    return null;
+  }).filter((data: any) => data !== null);
+  
   const [data, setData] = useState(formattedData);
 
   const regression = useMemo(() => calculateRegression(data), [data]);
   const correlation = useMemo(() => calculateCorrelation(data), [data]);
+  
+  const ActualizarTable = () => {
+    const updatedData = temperatureData.map((temp: { value: any }, index: string | number) => ({
+      x: temp.value,
+      y: humidityData[index]?.value || 0,
+    })).filter( (data: any) => data.y !== null);
+  
+    setData(updatedData);
+  };
 
   const regressionLine = [
     { x: Math.min(...data.map((d: { x: any; }) => d.x)), y: regression.a * Math.min(...data.map((d: { x: any; }) => d.x)) + regression.b },
     { x: Math.max(...data.map((d: { x: any; }) => d.x)), y: regression.a * Math.max(...data.map((d: { x: any; }) => d.x)) + regression.b },
   ];
-
-  const regenerateData = () => {
-    setData(
-      Array.from({ length: 50 }, (_, i) => ({
-        x: i + Math.random() * 10,
-        y: i * 1.5 + Math.random() * 20,
-      }))
-    );
-  };
 
   return (
     <Card>
@@ -93,7 +97,7 @@ export default function LinearRegressionChart({
           </ResponsiveContainer>
         </ChartContainer>
         <div className="mt-4 flex justify-center">
-          <Button onClick={regenerateData}>Regenerar Datos</Button>
+          <Button onClick={ActualizarTable}>Actualizar Tabla</Button>
         </div>
         <p className="mt-4 capitalize text-center text-sm text-muted-foreground">
           Ecuación de regresión: <span className="font-bold">y = {regression.a.toFixed(2)}x + {regression.b.toFixed(2)}</span>
